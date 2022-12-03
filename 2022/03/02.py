@@ -1,8 +1,8 @@
 with open("input.txt") as file:
     sacks = [x.strip() for x in file.readlines()]
     prioritySum = 0
-    for i in range(int(len(sacks)/3)):
-        group = [sack.strip() for sack in sacks[i*3:(i*3)+3]]
+    for i in range(0, len(sacks), 3):
+        group = [sack.strip() for sack in sacks[i:i+3]]
         #print(group)
         group = [set(sack) for sack in group]
         #print(group[0] & group[1])
