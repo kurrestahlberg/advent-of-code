@@ -59,8 +59,9 @@ with open("input.txt") as f:
     print(Coordinate(-15, 0).unit())
 
     rope = [Coordinate(0, 0)] * 10
+    tail = len(rope) - 1
 
-    tail_positions: list[Coordinate] = [rope[9]]
+    tail_positions: list[Coordinate] = [rope[tail]]
 
     count = 0
 
@@ -71,10 +72,10 @@ with open("input.txt") as f:
             rope[0] = move_tail_step(rope[0], target)
             #print("Head goes to {0}".format(rope[0]))
 
-            for i in range(1, 10, 1):
+            for i in range(1, len(rope), 1):
                 if rope[i].distance_to(rope[i - 1]) > 1:
                     rope[i] = move_tail_step(rope[i], rope[i - 1])
-                    if i == 9:
+                    if i == tail:
                         #print("Knot {1} goes to {0}".format(rope[i], i))
                         tail_positions.append(rope[i])
 
