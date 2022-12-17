@@ -38,20 +38,19 @@ def solve(file: str) -> int:
         x = 500 - minX
         for y in range(len(wall_map)):
             if wall_map[y][x] != '.':
-                if x == 0:
+                if y == 0:
                     return False
                 
                 if wall_map[y][x - 1] == '.':
                     x -= 1
-                elif x >= len(wall_map[y]):
-                    return False
                 elif wall_map[y][x + 1] == '.':
                     x += 1
                 else:
                     wall_map[y - 1][x] = '*'
                     return True
 
-        return False
+        wall_map[-1][x] = '*'
+        return True
 
     def print_map():
         print()
@@ -72,7 +71,9 @@ def solve(file: str) -> int:
 
     print("{0} -> {1} ==> {2} -> {3}".format((minX, minY), (maxX, maxY), map_coords(minX, minY), map_coords(maxX, maxY)))
 
-    end = map_coords(maxX + 1, maxY + 1)
+    minX -= maxY
+    maxX += maxY
+    end = map_coords(maxX + 1, maxY + 2)
     for _ in range(end[1]):
         wall_map.append(["."]*end[0])
 
