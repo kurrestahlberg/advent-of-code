@@ -28,6 +28,27 @@ func readLines(filename string) []string {
 	return lines
 }
 
+func readLinesAsByteArray(filename string) [][]byte {
+	readFile, err := os.Open(filename)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fileScanner := bufio.NewScanner(readFile)
+
+	fileScanner.Split(bufio.ScanLines)
+
+	lines := [][]byte{}
+
+	for fileScanner.Scan() {
+		lines = append(lines, []byte(fileScanner.Text()))
+	}
+
+	readFile.Close()
+
+	return lines
+}
+
 func Keys[K comparable, V any](m map[K]V) []K {
 	keys := make([]K, 0, len(m))
 
