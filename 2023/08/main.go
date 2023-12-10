@@ -64,7 +64,7 @@ func partTwo(filename string) string {
 	var sequence string
 	network := map[string]Node{}
 	regex := regexp.MustCompile(`^([A-Z0-9]{3}) = \(([A-Z0-9]{3}), ([A-Z0-9]{3})\)$`)
-	currents := []string{}
+	starts := []string{}
 
 	for i, line := range lines {
 		if i == 0 {
@@ -75,48 +75,56 @@ func partTwo(filename string) string {
 			parts := regex.FindStringSubmatch(line)
 			network[parts[1]] = Node{parts[2], parts[3]}
 			if parts[1][2] == 'A' {
-				currents = append(currents, parts[1])
+				starts = append(starts, parts[1])
 			}
 		}
 	}
 
-	fmt.Println(currents)
+	pathLengths := make([]int, len(starts))
 
+	for startIdx, pos := range starts {
+		distanceToEnd := findEnd(pos, sequence, network)
+		//fmt.Println(pos, distanceToEnd)
+		pathLengths[startIdx] = distanceToEnd
+	}
+
+	total := 1
+	for _, val := range pathLengths {
+		lcm := leastCommonMultiple(total, val)
+		// fmt.Println("LCM", total, val, lcm, greatestCommonDivisor(total, val))
+		total = lcm
+	}
+	return strconv.Itoa(total)
+}
+
+func findEnd(start string, sequence string, network map[string]Node) int {
+	current := start
 	stepCount := 0
-	maxZs := 0
 	for {
-		for seq := 0; seq < len(sequence); seq++ {
+		for i := 0; i < len(sequence); i++ {
 			stepCount += 1
-			end := true
-			currentZs := 0
-			if sequence[seq] == 'R' {
-				for i := range currents {
-					currents[i] = network[currents[i]].right
-					if currents[i][2] != 'Z' {
-						end = false
-					} else {
-						currentZs += 1
-					}
-				}
+			if sequence[i] == 'R' {
+				current = network[current].right
 			} else {
-				for i := range currents {
-					currents[i] = network[currents[i]].left
-					if currents[i][2] != 'Z' {
-						end = false
-					} else {
-						currentZs += 1
-					}
-				}
+				current = network[current].left
 			}
-			if end {
-				return strconv.Itoa(stepCount)
-			}
-			if currentZs > maxZs {
-				maxZs = currentZs
-			}
-			if stepCount%1000000 == 0 {
-				fmt.Println(stepCount, " -- ", currents, " -- ", maxZs, currentZs)
+
+			// fmt.Println(current, i, stepCount)
+
+			if current[2] == 'Z' {
+				return stepCount
 			}
 		}
 	}
+}
+
+func leastCommonMultiple(a int, b int) int {
+	return (a * b) / greatestCommonDivisor(a, b)
+}
+
+func greatestCommonDivisor(a int, b int) int {
+	if b == 0 {
+		return a
+	}
+	return greatestCommonDivisor(b, a%b)
 }
