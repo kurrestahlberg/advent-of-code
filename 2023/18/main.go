@@ -25,12 +25,6 @@ var dirMap = map[string]int{
 	"D": 2, //{0, 1},
 	"L": 3, //{-1, 0},
 }
-var dirList = []Coord{
-	{0, -1},
-	{1, 0},
-	{0, 1},
-	{-1, 0},
-}
 
 const defaultMultiplier = 10
 

@@ -64,6 +64,23 @@ func Keys[K comparable, V any](m map[K]V) []K {
 	return keys
 }
 
+func copyMap[K comparable, V any](m map[K]V) map[K]V {
+	copied := make(map[K]V)
+	for k, v := range m {
+		copied[k] = v
+	}
+	return copied
+}
+
+func copyArrayMap[K comparable, V ~[]E, E any](m map[K]V) map[K]V {
+	copied := make(map[K]V)
+	for k, v := range m {
+		copied[k] = make(V, len(v))
+		copy(copied[k], v)
+	}
+	return copied
+}
+
 func sliceAtoi(sa []string) ([]int, error) {
 	si := make([]int, 0, len(sa))
 	for _, a := range sa {
@@ -180,6 +197,13 @@ func setBlock(buffer Buffer, pos Coord, color byte) {
 	buffer.data[pos.y*buffer.width+pos.x] = color
 }
 
+var dirList = []Coord{
+	{0, -1},
+	{1, 0},
+	{0, 1},
+	{-1, 0},
+}
+
 func floodFill(buffer Buffer, startPos Coord, target byte, replacement byte) {
 
 	if !checkBlock(buffer, startPos, target) {
@@ -206,7 +230,7 @@ func floodFill(buffer Buffer, startPos Coord, target byte, replacement byte) {
 	}
 }
 func drawWorld(filename string, buffer Buffer, multiplier int) {
-	im := image.NewRGBA(image.Rectangle{Max: image.Point{X: buffer.width * multiplier, Y: buffer.height * multiplier * expansion}})
+	im := image.NewRGBA(image.Rectangle{Max: image.Point{X: buffer.width * multiplier, Y: buffer.height * multiplier}})
 
 	for x := 0; x < buffer.width; x++ {
 		for y := 0; y < buffer.height; y++ {
